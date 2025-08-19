@@ -2,18 +2,19 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Flask Upload App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de fichiers</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
+<body class="bg-gray-100 font-sans p-4">
+    <header class="mb-6">
+        <h1 class="text-3xl font-bold text-center">Mon Application Flask</h1>
+    </header>
+    <main class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="text-center mt-5 mb-3">
+        &copy; 2025 Mon Application Flask
+    </footer>
 </body>
 </html>

@@ -1,10 +1,13 @@
-from flask import Flask, request, redirect, url_for, render_template, send_from_directory, flash
 import os
+import time
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash
 
 app = Flask(__name__)
 app.secret_key = "secret"
-app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads')
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route("/")
 def index():
@@ -13,54 +16,50 @@ def index():
 
 @app.route("/upload", methods=["POST"])
 def upload_file():
-    if 'file' not in request.files:
-        flash("Aucun fichier sélectionné")
-        return redirect(url_for('index'))
-    file = request.files['file']
-    if file.filename == '':
-        flash("Aucun fichier sélectionné")
-        return redirect(url_for('index'))
+    if "file" not in request.files:
+        flash("Aucun fichier sélectionné", "error")
+        return redirect(url_for("index"))
+
+    file = request.files["file"]
+    if file.filename == "":
+        flash("Nom de fichier vide", "error")
+        return redirect(url_for("index"))
+
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
-    flash(f"{file.filename} téléversé avec succès")
-    return redirect(url_for('index'))
+    flash(f"{file.filename} téléversé", "success")
+    return redirect(url_for("index"))
 
 @app.route("/download/<filename>")
 def download_file(filename):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     if os.path.exists(file_path):
-        # Lire le fichier dans un flux pour éviter le verrouillage
-        with open(file_path, "rb") as f:
-            data = f.read()
-        from flask import Response
-        return Response(data, headers={
-            "Content-Disposition": f"attachment; filename={filename}"
-        })
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
     else:
-        flash(f"{filename} n'existe pas")
-        return redirect(url_for('index'))
+        flash(f"Fichier {filename} introuvable", "error")
+        return redirect(url_for("index"))
 
 @app.route("/delete/<filename>")
 def delete_file(filename):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     if os.path.exists(file_path):
         try:
+            # Petite pause pour libérer le fichier sous Windows
+            time.sleep(0.1)
             os.remove(file_path)
-            flash(f"{filename} supprimé avec succès")
+            flash(f"{filename} supprimé", "success")
         except PermissionError:
-            import time
-            for _ in range(5):
-                try:
-                    os.remove(file_path)
-                    flash(f"{filename} supprimé avec succès après attente")
-                    break
-                except PermissionError:
-                    time.sleep(0.1)
-            else:
-                flash(f"Impossible de supprimer {filename}")
+            flash(f"Impossible de supprimer {filename}. Le fichier est utilisé.", "error")
     else:
-        flash(f"{filename} n'existe pas")
-    return redirect(url_for('index'))
+        flash(f"Fichier {filename} introuvable", "error")
+    return redirect(url_for("index"))
+
+@app.route("/files")
+def list_files():
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    if not files:
+        flash("Aucun fichier", "info")
+    return render_template("index.html", files=files)
 
 if __name__ == "__main__":
     app.run(debug=True)

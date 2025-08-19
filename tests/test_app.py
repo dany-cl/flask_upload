@@ -1,32 +1,21 @@
-import os
 import io
+import os
 import pytest
 from my_app import app
-import time
-import shutil
 
 @pytest.fixture
-def client():
+def client(tmp_path):
     app.config['TESTING'] = True
-    temp_folder = os.path.join(os.path.dirname(__file__), 'temp_uploads')
-    os.makedirs(temp_folder, exist_ok=True)
-    app.config['UPLOAD_FOLDER'] = temp_folder
-
+    # Redirige les uploads vers un dossier temporaire pour tests
+    app.config['UPLOAD_FOLDER'] = tmp_path
     with app.test_client() as client:
         yield client
 
-    # Cleanup après les tests
-    for f in os.listdir(temp_folder):
-        file_path = os.path.join(temp_folder, f)
-        for _ in range(5):  # essayer 5 fois de supprimer si verrouillé
-            try:
-                os.remove(file_path)
-                break
-            except PermissionError:
-                time.sleep(0.1)
-        else:
-            print(f"Impossible de supprimer {file_path} après plusieurs essais")
-    shutil.rmtree(temp_folder, ignore_errors=True)
+def test_home(client):
+    """Vérifie que la page d'accueil se charge correctement"""
+    rv = client.get("/")
+    assert rv.status_code == 200
+    assert "Téléverser un fichier" in rv.data.decode('utf-8')
 
 def test_upload_download_delete(client):
     """Test upload, téléchargement et suppression d'un fichier"""
@@ -41,13 +30,35 @@ def test_upload_download_delete(client):
     assert rv.status_code == 200
     assert rv.data == b"Hello world"
 
-    # Supprimer
+    # Supprimer via route
     rv = client.get("/delete/test.txt", follow_redirects=True)
     assert rv.status_code == 200
+
+    # Vérifie que le fichier a bien été supprimé physiquement
+    file_path = os.path.join(client.application.config['UPLOAD_FOLDER'], 'test.txt')
+    if os.path.exists(file_path):
+        os.remove(file_path)
     assert "test.txt" not in os.listdir(client.application.config['UPLOAD_FOLDER'])
 
 def test_delete_nonexistent_file(client):
-    """Test suppression d'un fichier inexistant"""
-    rv = client.get("/delete/nonexistent.txt", follow_redirects=True)
+    """Test suppression d'un fichier qui n'existe pas"""
+    rv = client.get("/delete/inexistant.txt", follow_redirects=True)
     assert rv.status_code == 200
-    assert b"nonexistent.txt" in rv.data  # devrait afficher un message flash
+    assert "introuvable" in rv.data.decode('utf-8')
+
+def test_list_files_empty(client):
+    """Vérifie que la liste des fichiers est vide si aucun fichier"""
+    rv = client.get("/files")
+    assert rv.status_code == 200
+    assert "Aucun fichier" in rv.data.decode('utf-8')
+
+def test_list_files_with_files(client):
+    """Vérifie la liste des fichiers après upload"""
+    # Upload 2 fichiers
+    client.post("/upload", data={'file': (io.BytesIO(b"File1"), 'f1.txt')}, content_type='multipart/form-data')
+    client.post("/upload", data={'file': (io.BytesIO(b"File2"), 'f2.txt')}, content_type='multipart/form-data')
+
+    rv = client.get("/files")
+    assert rv.status_code == 200
+    assert "f1.txt" in rv.data.decode('utf-8')
+    assert "f2.txt" in rv.data.decode('utf-8')

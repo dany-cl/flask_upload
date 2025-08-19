@@ -1,36 +1,35 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Gestion des fichiers</title>
-</head>
-<body>
-    <h1>Fichiers téléversés</h1>
+{% extends "base.html" %}
 
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+{% block content %}
+<h2 class="text-xl font-semibold mb-4">Téléverser un fichier</h2>
 
-    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Téléverser">
-    </form>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="mb-4">
+      {% for category, message in messages %}
+        <div class="p-2 rounded mb-1 {% if category == 'success' %}bg-green-200{% else %}bg-red-200{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
-    <h2>Liste des fichiers</h2>
-    <ul>
-        {% for file in files %}
-        <li>
+<form method="POST" action="{{ url_for('upload_file') }}" enctype="multipart/form-data" class="mb-6">
+    <input type="file" name="file" class="border p-1 rounded mr-2">
+    <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded">Téléverser</button>
+</form>
+
+<h2 class="text-xl font-semibold mb-2">Fichiers téléversés</h2>
+<ul>
+    {% for file in files %}
+        <li class="mb-1">
             {{ file }}
-            <a href="{{ url_for('download_file', filename=file) }}">Télécharger</a>
-            <a href="{{ url_for('delete_file', filename=file) }}">Supprimer</a>
+            <a href="{{ url_for('download_file', filename=file) }}" class="text-blue-600 ml-2">Télécharger</a>
+            <a href="{{ url_for('delete_file', filename=file) }}" class="text-red-600 ml-2">Supprimer</a>
         </li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+    {% else %}
+        <li>Aucun fichier.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
