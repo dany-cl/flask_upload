@@ -1,6 +1,5 @@
 name: Test & Deploy Flask App
 
-# Déclenche sur push sur main
 on:
   push:
     branches:
@@ -11,17 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Récupère le code du repo
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # 2️⃣ Configure Python
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: 3.13
 
-    # 3️⃣ Installe les dépendances
     - name: Install dependencies
       run: |
         python -m venv venv
@@ -29,20 +25,16 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    # 4️⃣ Exécute les tests unitaires
     - name: Run tests
       run: |
         source venv/bin/activate
         pytest --maxfail=1 --disable-warnings -v
 
-    # 5️⃣ Déploiement sur Render si tests OK
     - name: Deploy to Render
-      if: success()  # ne se déclenche que si les tests passent
+      if: success()
       env:
-        RENDER_API_KEY: ${{ rnd_mv5QmbXFP64K87yviQTdM4Y98jBb }}
+        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
       run: |
-        curl -X POST "https://api.render.com/srv-d2ht71n5r7bs73eq19ug" \
+        curl -X POST "https://api.render.com/v1/services/srv-d2ht71n5r7bs73eq19ug/deploys" \
           -H "Accept: application/json" \
           -H "Authorization: Bearer $RENDER_API_KEY"
-
-   
