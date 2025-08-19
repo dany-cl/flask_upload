@@ -20,7 +20,7 @@ def test_home(client):
     """Vérifie que la page d'accueil se charge correctement"""
     rv = client.get("/")
     assert rv.status_code == 200
-    assert "Téléverser un fichier" in rv.data.decode('utf-8')
+    assert "Téléverser n fichier" in rv.data.decode('utf-8')
 
 def test_upload_download_delete(client):
     """Test upload, téléchargement et suppression d'un fichier"""
