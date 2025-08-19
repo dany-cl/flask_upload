@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des fichiers</title>
+</head>
+<body>
+    <h1>Fichiers téléversés</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Téléverser">
+    </form>
+
+    <h2>Liste des fichiers</h2>
+    <ul>
+        {% for file in files %}
+        <li>
+            {{ file }}
+            <a href="{{ url_for('download_file', filename=file) }}">Télécharger</a>
+            <a href="{{ url_for('delete_file', filename=file) }}">Supprimer</a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

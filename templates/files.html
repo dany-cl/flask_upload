@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Liste des fichiers uploadés</h2>
+<ul>
+    {% for file in files %}
+        <li>
+            {{ file }}
+            <a href="{{ url_for('download_file', filename=file) }}">Télécharger</a>
+            <a href="{{ url_for('delete_file', filename=file) }}">Supprimer</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{{ url_for('index') }}">Retour à l'accueil</a>
+{% endblock %}

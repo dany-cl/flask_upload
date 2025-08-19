@@ -1,22 +1,19 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Flask Upload App</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>Flask Upload App</title>
 </head>
 <body>
-  <header>
-    <h1>Flask Upload App </h1>
-    <nav>
-      <a href="{{ url_for('home') }}">Accueil</a> |
-      <a href="{{ url_for('upload_file') }}">Uploader</a> |
-      <a href="{{ url_for('list_files') }}">Fichiers</a>
-    </nav>
-    <hr>
-  </header>
-  <main>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
     {% block content %}{% endblock %}
-  </main>
 </body>
 </html>
