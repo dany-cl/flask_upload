@@ -45,5 +45,4 @@ jobs:
           -H "Accept: application/json" \
           -H "Authorization: Bearer $RENDER_API_KEY"
 
-   def test_fail_for_demo():
-    assert False, "Ce test est censé échouer pour démonstration"
+   
