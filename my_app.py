@@ -14,21 +14,25 @@ def index():
     files = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template("index.html", files=files)
 
-@app.route("/upload", methods=["POST"])
+@app.route("/upload", methods=["GET", "POST"])
 def upload_file():
-    if "file" not in request.files:
-        flash("Aucun fichier sélectionné", "error")
+    if request.method == "POST":
+        if "file" not in request.files:
+            flash("Aucun fichier sélectionné", "error")
+            return redirect(url_for("upload_file"))
+
+        file = request.files["file"]
+        if file.filename == "":
+            flash("Nom de fichier vide", "error")
+            return redirect(url_for("upload_file"))
+
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(file_path)
+        flash(f"{file.filename} téléversé", "success")
         return redirect(url_for("index"))
 
-    file = request.files["file"]
-    if file.filename == "":
-        flash("Nom de fichier vide", "error")
-        return redirect(url_for("index"))
-
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(file_path)
-    flash(f"{file.filename} téléversé", "success")
-    return redirect(url_for("index"))
+    # Si GET, afficher le formulaire
+    return render_template("upload.html")
 
 @app.route("/download/<filename>")
 def download_file(filename):
