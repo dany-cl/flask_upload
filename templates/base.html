@@ -6,15 +6,39 @@
     <title>Gestion de fichiers</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 font-sans p-4">
-    <header class="mb-6">
-        <h1 class="text-3xl font-bold text-center">Mon Application Flask</h1>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Header / Navigation -->
+    <header class="bg-blue-600 text-white shadow-md">
+        <div class="max-w-4xl mx-auto flex justify-between items-center p-4">
+            <h1 class="text-3xl font-bold">Mon Application Flask</h1>
+            <nav class="space-x-3">
+                <a href="/" class="px-3 py-1 rounded hover:bg-blue-500 transition">Accueil</a>
+                <a href="/upload" class="px-3 py-1 rounded hover:bg-blue-500 transition">Upload</a>
+                <a href="/files" class="px-3 py-1 rounded hover:bg-blue-500 transition">Liste des fichiers</a>
+            </nav>
+        </div>
     </header>
-    <main class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto bg-white p-8 mt-6 rounded-lg shadow-lg">
         {% block content %}{% endblock %}
     </main>
-    <footer class="text-center mt-5 mb-3">
+
+    <!-- Footer -->
+    <footer class="mt-10 p-4 bg-gray-200 text-center rounded-t-lg text-gray-700">
         &copy; 2025 Mon Application Flask
     </footer>
+
+    <!-- Optional JS -->
+    <script>
+        // Exemple simple pour montrer les animations hover si nécessaire
+        const buttons = document.querySelectorAll('a');
+        buttons.forEach(btn => {
+            btn.addEventListener('mouseover', () => btn.classList.add('scale-105'));
+            btn.addEventListener('mouseout', () => btn.classList.remove('scale-105'));
+        });
+    </script>
+
 </body>
 </html>
