@@ -68,7 +68,7 @@ def create_app():
 
     @app.route("/download/<filename>")
     def download_file(filename):
-        """Télécharger un fichier"""
+        """Télécharger un fichier existant"""
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if os.path.exists(file_path):
             app.logger.info(f"Téléchargement fichier : {filename}")
@@ -97,7 +97,6 @@ def create_app():
         return redirect(url_for("list_files"))
 
     return app
-
 
 # --------------------------
 # Exécution directe
