@@ -4,14 +4,18 @@ import logging
 from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash
 
-def create_app():
+def create_app(test_config=None):
     app = Flask(__name__)
     app.secret_key = "secret"
 
     # --------------------------
-    # Dossier uploads persistant
+    # Choix du dossier uploads
     # --------------------------
-    UPLOAD_FOLDER = "/mnt/data/uploads"  # Render Persistent Disk
+    if test_config and "UPLOAD_FOLDER" in test_config:
+        UPLOAD_FOLDER = test_config["UPLOAD_FOLDER"]  # Pour tests
+    else:
+        UPLOAD_FOLDER = "/mnt/data/uploads"          # Pour Render / production
+
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -32,11 +36,13 @@ def create_app():
     # --------------------------
     @app.route("/", methods=["GET"])
     def index():
+        """Page d'accueil"""
         app.logger.info("Page d'accueil visitée")
-        return render_template("index.html")
+        return render_template("index.html")  # Texte attendu : "Bienvenue sur l'application Flask"
 
     @app.route("/upload", methods=["GET", "POST"])
     def upload_file():
+        """Afficher formulaire et gérer upload"""
         if request.method == "POST":
             if "file" not in request.files:
                 flash("Aucun fichier sélectionné", "error")
@@ -55,16 +61,18 @@ def create_app():
             app.logger.info(f"Fichier uploadé : {file.filename}")
             return redirect(url_for("list_files"))
 
-        return render_template("upload.html")
+        return render_template("upload.html")  # Texte attendu : "Uploader un fichier"
 
     @app.route("/files", methods=["GET"])
     def list_files():
+        """Afficher la liste des fichiers"""
         files = os.listdir(app.config['UPLOAD_FOLDER'])
         app.logger.info("Liste des fichiers consultée")
         return render_template("list.html", files=files)
 
     @app.route("/download/<filename>")
     def download_file(filename):
+        """Télécharger un fichier"""
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if os.path.exists(file_path):
             app.logger.info(f"Téléchargement fichier : {filename}")
@@ -76,6 +84,7 @@ def create_app():
 
     @app.route("/delete/<filename>")
     def delete_file(filename):
+        """Supprimer un fichier"""
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if os.path.exists(file_path):
             try:
@@ -93,9 +102,8 @@ def create_app():
 
     return app
 
-
 # --------------------------
-# Exécution directe
+# Exécution directe (dev)
 # --------------------------
 if __name__ == "__main__":
     app = create_app()
