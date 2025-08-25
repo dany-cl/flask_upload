@@ -4,20 +4,16 @@ import logging
 from logging.handlers import RotatingFileHandler
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash
 
-def create_app(test_config=None):
+def create_app():
     app = Flask(__name__)
     app.secret_key = "secret"
 
     # --------------------------
-    # Choix du dossier uploads
+    # Dossier uploads
     # --------------------------
-    if test_config and "UPLOAD_FOLDER" in test_config:
-        UPLOAD_FOLDER = test_config["UPLOAD_FOLDER"]  # Pour tests
-    else:
-        UPLOAD_FOLDER = "/mnt/data/uploads"          # Pour Render / production
-
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
     # --------------------------
     # Logging
@@ -36,7 +32,7 @@ def create_app(test_config=None):
     # --------------------------
     @app.route("/", methods=["GET"])
     def index():
-        """Page d'accueil"""
+        """Page d'accueil : seulement accueil / lien vers upload"""
         app.logger.info("Page d'accueil visitée")
         return render_template("index.html")  # Texte attendu : "Bienvenue sur l'application Flask"
 
@@ -102,8 +98,9 @@ def create_app(test_config=None):
 
     return app
 
+
 # --------------------------
-# Exécution directe (dev)
+# Exécution directe
 # --------------------------
 if __name__ == "__main__":
     app = create_app()
