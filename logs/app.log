@@ -56,3 +56,31 @@
 [2025-08-25 21:38:51,199] INFO in my_app: Fichier uploadé : f1.txt
 [2025-08-25 21:38:51,244] INFO in my_app: Fichier uploadé : f2.txt
 [2025-08-25 21:38:51,275] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:51:13,289] INFO in my_app: Page d'accueil visitée
+[2025-08-25 21:51:13,944] INFO in my_app: Fichier uploadé : test.txt
+[2025-08-25 21:51:14,029] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:51:14,112] INFO in my_app: Fichier uploadé : f1.txt
+[2025-08-25 21:51:14,115] INFO in my_app: Téléchargement fichier : f1.txt
+[2025-08-25 21:51:14,177] INFO in my_app: Fichier uploadé : fdel.txt
+[2025-08-25 21:51:14,285] INFO in my_app: Fichier supprimé : fdel.txt
+[2025-08-25 21:51:14,288] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:51:14,363] WARNING in my_app: Tentative suppression fichier introuvable : inexistant.txt
+[2025-08-25 21:51:14,368] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:51:15,192] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:51:15,264] INFO in my_app: Fichier uploadé : f1.txt
+[2025-08-25 21:51:15,282] INFO in my_app: Fichier uploadé : f2.txt
+[2025-08-25 21:51:15,292] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:57:04,829] INFO in my_app: Page d'accueil visitée
+[2025-08-25 21:57:05,537] INFO in my_app: Fichier uploadé : test.txt
+[2025-08-25 21:57:05,669] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:57:05,822] INFO in my_app: Fichier uploadé : f1.txt
+[2025-08-25 21:57:05,825] INFO in my_app: Téléchargement fichier : f1.txt
+[2025-08-25 21:57:05,956] INFO in my_app: Fichier uploadé : fdel.txt
+[2025-08-25 21:57:06,063] INFO in my_app: Fichier supprimé : fdel.txt
+[2025-08-25 21:57:06,066] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:57:06,147] WARNING in my_app: Tentative suppression fichier introuvable : inexistant.txt
+[2025-08-25 21:57:06,154] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:57:06,212] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 21:57:06,328] INFO in my_app: Fichier uploadé : f1.txt
+[2025-08-25 21:57:06,342] INFO in my_app: Fichier uploadé : f2.txt
+[2025-08-25 21:57:06,345] INFO in my_app: Liste des fichiers consultée
