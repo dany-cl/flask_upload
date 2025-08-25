@@ -98,3 +98,17 @@
 [2025-08-25 22:36:01,620] INFO in my_app: Fichier uploadé : f1.txt
 [2025-08-25 22:36:01,632] INFO in my_app: Fichier uploadé : f2.txt
 [2025-08-25 22:36:01,637] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 22:44:55,781] INFO in my_app: Page d'accueil visitée
+[2025-08-25 22:44:56,325] INFO in my_app: Fichier uploadé : test.txt
+[2025-08-25 22:44:56,329] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 22:44:56,428] INFO in my_app: Fichier uploadé : f1.txt
+[2025-08-25 22:44:56,431] INFO in my_app: Téléchargement fichier : f1.txt
+[2025-08-25 22:44:56,524] INFO in my_app: Fichier uploadé : fdel.txt
+[2025-08-25 22:44:56,680] INFO in my_app: Fichier supprimé : fdel.txt
+[2025-08-25 22:44:56,683] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 22:44:56,752] WARNING in my_app: Tentative suppression fichier introuvable : inexistant.txt
+[2025-08-25 22:44:56,757] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 22:44:56,905] INFO in my_app: Liste des fichiers consultée
+[2025-08-25 22:44:57,035] INFO in my_app: Fichier uploadé : f1.txt
+[2025-08-25 22:44:57,098] INFO in my_app: Fichier uploadé : f2.txt
+[2025-08-25 22:44:57,102] INFO in my_app: Liste des fichiers consultée

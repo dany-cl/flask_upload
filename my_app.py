@@ -9,11 +9,11 @@ def create_app():
     app.secret_key = "secret"
 
     # --------------------------
-    # Dossier uploads
+    # Dossier uploads persistant
     # --------------------------
-    UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    UPLOAD_FOLDER = "/mnt/data/uploads"  # Render Persistent Disk
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     # --------------------------
     # Logging
@@ -32,13 +32,11 @@ def create_app():
     # --------------------------
     @app.route("/", methods=["GET"])
     def index():
-        """Page d'accueil : seulement accueil / lien vers upload"""
         app.logger.info("Page d'accueil visitée")
-        return render_template("index.html")  # Texte attendu : "Bienvenue sur l'application Flask"
+        return render_template("index.html")
 
     @app.route("/upload", methods=["GET", "POST"])
     def upload_file():
-        """Afficher formulaire et gérer upload"""
         if request.method == "POST":
             if "file" not in request.files:
                 flash("Aucun fichier sélectionné", "error")
@@ -57,18 +55,16 @@ def create_app():
             app.logger.info(f"Fichier uploadé : {file.filename}")
             return redirect(url_for("list_files"))
 
-        return render_template("upload.html")  # Texte attendu : "Uploader un fichier"
+        return render_template("upload.html")
 
     @app.route("/files", methods=["GET"])
     def list_files():
-        """Afficher la liste des fichiers"""
         files = os.listdir(app.config['UPLOAD_FOLDER'])
         app.logger.info("Liste des fichiers consultée")
         return render_template("list.html", files=files)
 
     @app.route("/download/<filename>")
     def download_file(filename):
-        """Télécharger un fichier"""
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if os.path.exists(file_path):
             app.logger.info(f"Téléchargement fichier : {filename}")
@@ -80,7 +76,6 @@ def create_app():
 
     @app.route("/delete/<filename>")
     def delete_file(filename):
-        """Supprimer un fichier"""
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if os.path.exists(file_path):
             try:
