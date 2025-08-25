@@ -11,29 +11,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      # 1. Checkout du code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python 3.13
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.13
+      # 2. Setup Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pytest flask
+      # 3. Installation des dépendances
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest flask
 
-    - name: Run tests
-      run: |
-        pytest --maxfail=1 --disable-warnings -v
+      # 4. Lancer les tests
+      - name: Run tests
+        id: pytest
+        run: |
+          source venv/bin/activate
+          pytest --maxfail=1 --disable-warnings -v
 
-    - name: Deploy to Render
-      if: success()  # Se lance seulement si les tests passent
-      env:
-        RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-      run: |
-        curl -X POST "https://api.render.com/v1/services/srv-d2ht71n5r7bs73eq19ug/deploys" \
-          -H "Accept: application/json" \
-          -H "Authorization: Bearer $RENDER_API_KEY"
+      # 5. Déploiement sur Render si les tests passent
+      - name: Deploy to Render
+        if: success()  # Se déclenche uniquement si l'étape précédente a réussi
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
+          curl -X POST "https://api.render.com/v1/services/srv-d2ht71n5r7bs73eq19ug/deploys" \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer $RENDER_API_KEY"
