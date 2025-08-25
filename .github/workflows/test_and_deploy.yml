@@ -8,22 +8,34 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.13
-      - run: |
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      - run: |
-          set -e
+          pip install pytest flask
+
+      - name: Run tests
+        run: |
           pytest --maxfail=1 --disable-warnings -v
+          # Si pytest échoue, le code de sortie sera != 0 → job échoue
 
   deploy:
-    needs: test   # ← attend que le job 'test' réussisse
+    needs: test
+    if: ${{ needs.test.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: Trigger Render deploy
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+        run: |
           curl -X POST "https://api.render.com/v1/services/srv-d2ht71n5r7bs73eq19ug/deploys" \
                -H "Accept: application/json" \
-               -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
+               -H "Authorization: Bearer $RENDER_API_KEY"
