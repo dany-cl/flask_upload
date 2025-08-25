@@ -75,3 +75,4 @@ def test_list_files_with_files(client):
     content = rv.data.decode('utf-8')
     assert "f1.txt" in content
     assert "f2.txt" in content
+ 
