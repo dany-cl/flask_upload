@@ -1,24 +1,39 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploader un fichier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
 
-{% block content %}
-<div class="text-center">
-    <h2 class="text-2xl font-semibold mb-6">Uploader un fichier</h2>
-    
-    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data" class="bg-gray-50 p-6 rounded-lg shadow-md max-w-md mx-auto">
-        <input type="file" name="file" required 
-               class="border border-gray-300 rounded px-3 py-2 w-full mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400">
-        
-        <button type="submit" 
-                class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-500 transition">
-            Uploader
-        </button>
+<header>
+    <h1>Uploader un fichier</h1>
+    <nav>
+        <a href="{{ url_for('index') }}">Accueil</a>
+        <a href="{{ url_for('list_files') }}">Voir les fichiers</a>
+    </nav>
+</header>
+
+<main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div>
+          {% for category, message in messages %}
+            <p class="{% if category == 'success' %}success{% else %}error{% endif %}">
+                {{ message }}
+            </p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <input type="submit" value="Uploader">
     </form>
+</main>
 
-    <div class="mt-4">
-        <a href="{{ url_for('index') }}" 
-           class="inline-block bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition">
-            Retour à l'accueil
-        </a>
-    </div>
-</div>
-{% endblock %}
+</body>
+</html>
