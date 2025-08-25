@@ -2,24 +2,48 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des fichiers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>📂 Fichiers disponibles</h1>
 
-    <ul>
-        {% for file in files %}
-        <li>
-            {{ file }}
-            | <a href="{{ url_for('download_file', filename=file) }}">📥 Télécharger</a>
-            | <a href="{{ url_for('delete_file', filename=file) }}">🗑️ Supprimer</a>
-        </li>
-        {% else %}
-        <li>Aucun fichier disponible.</li>
-        {% endfor %}
-    </ul>
+<header>
+    <h1>Fichiers uploadés</h1>
+    <nav>
+        <a href="{{ url_for('index') }}">Accueil</a>
+        <a href="{{ url_for('upload_file') }}">Uploader un nouveau fichier</a>
+    </nav>
+</header>
 
-    <p><a href="{{ url_for('upload_file') }}">⬆️ Uploader un fichier</a></p>
-    <p><a href="{{ url_for('index') }}">🏠 Retour accueil</a></p>
+<main>
+    <!-- Affichage des messages flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div>
+          {% for category, message in messages %}
+            <p class="{% if category == 'success' %}success{% else %}error{% endif %}">
+                {{ message }}
+            </p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Liste des fichiers -->
+    {% if files %}
+        <ul>
+            {% for f in files %}
+                <li>
+                    <a href="{{ url_for('download_file', filename=f) }}">{{ f }}</a>
+                    <a href="{{ url_for('delete_file', filename=f) }}" class="delete" onclick="return confirm('Supprimer ce fichier ?')">Supprimer</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun fichier uploadé pour le moment.</p>
+    {% endif %}
+</main>
+
 </body>
 </html>
