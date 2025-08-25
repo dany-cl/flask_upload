@@ -2,16 +2,19 @@ name: Test & Deploy Flask App
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main   # ne se déclenche que sur la branche main
 
 jobs:
   test:
+    name: Run tests
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.13'
@@ -25,12 +28,13 @@ jobs:
       - name: Run tests
         run: |
           pytest --maxfail=1 --disable-warnings -v
-          # Si pytest échoue, le code de sortie sera != 0 → job échoue
 
   deploy:
+    name: Deploy to Render
     needs: test
     if: ${{ needs.test.result == 'success' }}
     runs-on: ubuntu-latest
+
     steps:
       - name: Trigger Render deploy
         env:
